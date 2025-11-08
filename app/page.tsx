@@ -1,14 +1,8 @@
-import { getQueryClient, HydrateClient, prefetch, trpc } from "@/trpc/server";
-import Client from "./client";
+import { requireAuth } from "@/lib/auth-utils";
+import { caller } from "@/trpc/server";
 
 export default async function Home() {
-  prefetch(trpc.getUsers.queryOptions());
-
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <HydrateClient>
-        <Client />
-      </HydrateClient>
-    </div>
-  );
+  await requireAuth();
+  const user = await caller.getUser();
+  return <div>{JSON.stringify(user, null, 2)}</div>;
 }
