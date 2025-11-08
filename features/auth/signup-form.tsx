@@ -20,12 +20,12 @@ import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Spinner } from "./ui/spinner";
+import { Spinner } from "../../components/ui/spinner";
 import Link from "next/link";
-import { Github } from "lucide-react";
 import { signUp } from "@/lib/auth-client";
 import { ErrorContext } from "better-auth/react";
 import { toast } from "sonner";
+import Image from "next/image";
 
 const signupSchema = z
   .object({
@@ -191,7 +191,12 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                     <Spinner />
                   ) : (
                     <>
-                      <Github className="mr-2 h-4 w-4" />
+                      <Image
+                        src="/logos/github.svg"
+                        alt="GitHub"
+                        width={20}
+                        height={20}
+                      />
                       Sign up with GitHub
                     </>
                   )}
