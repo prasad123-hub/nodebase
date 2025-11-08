@@ -20,13 +20,13 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Spinner } from "./ui/spinner";
+import { Spinner } from "../../components/ui/spinner";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Github } from "lucide-react";
 import { ErrorContext } from "better-auth/react";
 import { toast } from "sonner";
 import { signIn } from "@/lib/auth-client";
+import Image from "next/image";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -122,7 +122,12 @@ export function LoginForm({
                 {isPending ? <Spinner /> : "Login"}
               </Button>
               <Button variant="outline" type="button" onClick={() => {}}>
-                <Github className="mr-2 h-4 w-4" />
+                <Image
+                  src="/logos/github.svg"
+                  alt="GitHub"
+                  width={20}
+                  height={20}
+                />
                 Login with GitHub
               </Button>
               <FieldDescription className="text-center">
