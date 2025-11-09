@@ -26,6 +26,7 @@ import { signUp } from "@/lib/auth-client";
 import { ErrorContext } from "better-auth/react";
 import { toast } from "sonner";
 import Image from "next/image";
+import { PasswordInput } from "@/components/ui/password-input";
 
 const signupSchema = z
   .object({
@@ -136,10 +137,9 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <Input
+                  <PasswordInput
                     {...field}
                     id="password"
-                    type="password"
                     placeholder="********"
                     required
                   />
@@ -160,10 +160,9 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   <FieldLabel htmlFor="confirmPassword">
                     Confirm Password
                   </FieldLabel>
-                  <Input
+                  <PasswordInput
                     {...field}
                     id="confirmPassword"
-                    type="password"
                     placeholder="********"
                     required
                   />
