@@ -7,7 +7,7 @@
   },
   "files": {
     "include": [
-      "app/**/*.tsx",
+      "app/**/*.tsx *.ts",
       "components/**/*.tsx",
       "lib/**/*.ts",
       "hooks/**/*.ts",
