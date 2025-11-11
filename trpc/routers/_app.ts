@@ -1,9 +1,10 @@
 import { google } from '@ai-sdk/google';
 import { generateText } from 'ai';
-import { z } from 'zod';
+
 import { inngest } from '@/inngest/client';
 import prisma from '@/lib/prisma';
-import { baseProcedure, createTRPCRouter, protectedProcedure } from '../init';
+
+import { createTRPCRouter, protectedProcedure } from '../init';
 
 export const appRouter = createTRPCRouter({
   testAPI: protectedProcedure.mutation(async () => {
@@ -14,8 +15,8 @@ export const appRouter = createTRPCRouter({
     return { text };
   }),
 
-  getWorkflows: protectedProcedure.query(async ({ ctx }) => {
-    return await prisma.workflow.findMany();
+  getWorkflows: protectedProcedure.query(async () => {
+    return prisma.workflow.findMany();
   }),
 
   createWorkflow: protectedProcedure.mutation(async () => {

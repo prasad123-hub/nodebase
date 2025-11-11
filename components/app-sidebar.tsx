@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   CreditCardIcon,
@@ -7,11 +7,10 @@ import {
   KeyIcon,
   LogOutIcon,
   StarIcon,
-} from "lucide-react";
-
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+} from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 
 import {
   Sidebar,
@@ -23,27 +22,28 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import { signOut } from "@/lib/auth-client";
+} from '@/components/ui/sidebar';
+import { useHasActiveSubscription } from '@/hooks/use-subscription';
+import { checkout, customer, signOut } from '@/lib/auth-client';
 
 const menuItems = [
   {
-    title: "Home",
+    title: 'Home',
     items: [
       {
-        title: "Workflows",
+        title: 'Workflows',
         icon: FolderOpenIcon,
-        url: "/workflows",
+        url: '/workflows',
       },
       {
-        title: "Credentials",
+        title: 'Credentials',
         icon: KeyIcon,
-        url: "/credentials",
+        url: '/credentials',
       },
       {
-        title: "Executions",
+        title: 'Executions',
         icon: HistoryIcon,
-        url: "/executions",
+        url: '/executions',
       },
     ],
   },
@@ -52,6 +52,7 @@ const menuItems = [
 export const AppSidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const { isActiveSubscription, isLoading } = useHasActiveSubscription();
 
   return (
     <Sidebar collapsible="icon">
@@ -59,12 +60,7 @@ export const AppSidebar = () => {
         <SidebarMenuItem>
           <SidebarMenuButton asChild className="gap-x-4 h-10 px-4">
             <Link href="/" prefetch>
-              <Image
-                src="/logos/logo.svg"
-                alt="Nodebase"
-                width={30}
-                height={30}
-              />
+              <Image src="/logos/logo.svg" alt="Nodebase" width={30} height={30} />
               <span className="text-sm font-semibold">Nodebase</span>
             </Link>
           </SidebarMenuButton>
@@ -80,11 +76,7 @@ export const AppSidebar = () => {
                     <SidebarMenuButton
                       asChild
                       tooltip={item.title}
-                      isActive={
-                        item.url === "/"
-                          ? pathname === "/"
-                          : pathname.startsWith(item.url)
-                      }
+                      isActive={item.url === '/' ? pathname === '/' : pathname.startsWith(item.url)}
                       className="gap=x-4 h-10 px-4"
                     >
                       <Link href={item.url} prefetch>
@@ -101,21 +93,29 @@ export const AppSidebar = () => {
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              tooltip="Upgrade to Pro"
-              className="gap-x-4 h-10 px-4"
-              onClick={() => {}}
-            >
-              <StarIcon className="size-4" />
-              <span>Upgrade to Pro</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {!isLoading && !isActiveSubscription && (
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                tooltip="Upgrade to Pro"
+                className="gap-x-4 h-10 px-4"
+                onClick={() => {
+                  checkout({
+                    slug: 'Nodebase-Pro',
+                  });
+                }}
+              >
+                <StarIcon className="size-4" />
+                <span>Upgrade to Pro</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
           <SidebarMenuItem>
             <SidebarMenuButton
               tooltip="Billing Portal"
               className="gap-x-4 h-10 px-4"
-              onClick={() => {}}
+              onClick={() => {
+                customer.portal();
+              }}
             >
               <CreditCardIcon className="size-4" />
               <span>Billing Portal</span>
@@ -129,7 +129,7 @@ export const AppSidebar = () => {
                 signOut({
                   fetchOptions: {
                     onSuccess: () => {
-                      router.push("/login");
+                      router.push('/login');
                     },
                   },
                 })

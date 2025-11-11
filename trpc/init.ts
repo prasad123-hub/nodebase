@@ -1,6 +1,8 @@
-import { requireAuth } from '@/lib/auth-utils';
 import { initTRPC, TRPCError } from '@trpc/server';
 import { cache } from 'react';
+
+import { requireAuth } from '@/lib/auth-utils';
+import { polarClient } from '@/lib/polar';
 export const createTRPCContext = cache(async () => {
   /**
    * @see: https://trpc.io/docs/server/context
@@ -29,4 +31,16 @@ export const protectedProcedure = t.procedure.use(async ({ next, ctx }) => {
   }
 
   return next({ ctx: { ...ctx, auth: session } });
+});
+
+export const premiumProcedure = protectedProcedure.use(async ({ ctx, next }) => {
+  const customer = await polarClient.customers.getStateExternal({
+    externalId: ctx.auth.user.id as string,
+  });
+
+  if (!customer) {
+    throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Unauthorized' });
+  }
+
+  return next({ ctx: { ...ctx, customer } });
 });
