@@ -1,31 +1,9 @@
-import { google } from '@ai-sdk/google';
-import { generateText } from 'ai';
+import { workflowsRouter } from '@/features/workflows/server/routers';
 
-import { inngest } from '@/inngest/client';
-import prisma from '@/lib/prisma';
-
-import { createTRPCRouter, protectedProcedure } from '../init';
+import { createTRPCRouter } from '../init';
 
 export const appRouter = createTRPCRouter({
-  testAPI: protectedProcedure.mutation(async () => {
-    const { text } = await generateText({
-      model: google('gemini-2.5-flash'),
-      prompt: 'Write a vegetarian lasagna recipe for 4 people.',
-    });
-    return { text };
-  }),
-
-  getWorkflows: protectedProcedure.query(async () => {
-    return prisma.workflow.findMany();
-  }),
-
-  createWorkflow: protectedProcedure.mutation(async () => {
-    await inngest.send({
-      name: 'workflow/execute',
-    });
-
-    return { success: true, message: 'Job Queued Successfully' };
-  }),
+  workflows: workflowsRouter,
 });
 // export type definition of API
 export type AppRouter = typeof appRouter;

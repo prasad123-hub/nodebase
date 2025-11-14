@@ -38,8 +38,11 @@ export const premiumProcedure = protectedProcedure.use(async ({ ctx, next }) => 
     externalId: ctx.auth.user.id as string,
   });
 
-  if (!customer) {
-    throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Unauthorized' });
+  if (!customer.activeSubscriptions || customer.activeSubscriptions.length === 0) {
+    throw new TRPCError({
+      code: 'FORBIDDEN',
+      message: 'You must be a premium user to access this resource',
+    });
   }
 
   return next({ ctx: { ...ctx, customer } });
